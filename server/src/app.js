@@ -16,13 +16,22 @@ function normalizeOrigin(value) {
 }
 
 function parseAllowedOrigins(value) {
-  return String(value || "http://localhost:8080")
+  return String(value || "")
     .split(",")
     .map((origin) => normalizeOrigin(origin))
     .filter(Boolean);
 }
 
-const allowedOrigins = parseAllowedOrigins(process.env.FRONTEND_URL);
+const allowedOrigins = Array.from(
+  new Set(
+    [
+      ...parseAllowedOrigins(process.env.FRONTEND_URL),
+      normalizeOrigin(process.env.URL),
+      normalizeOrigin(process.env.DEPLOY_PRIME_URL),
+      "http://localhost:8080",
+    ].filter(Boolean),
+  ),
+);
 const allowAllOrigins = allowedOrigins.includes("*");
 
 app.use(

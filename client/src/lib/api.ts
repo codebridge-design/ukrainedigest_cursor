@@ -2,7 +2,19 @@ import type { SnapshotResponse } from "@/types/snapshot";
 
 function resolveApiBaseUrl() {
   const raw = String(import.meta.env.VITE_API_BASE_URL || "").trim();
-  if (!raw) return "http://localhost:5001";
+  if (!raw) {
+    if (typeof window !== "undefined") {
+      const { hostname, port } = window.location;
+      if (
+        (hostname === "localhost" || hostname === "127.0.0.1") &&
+        (port === "8080" || port === "5173")
+      ) {
+        return "http://localhost:5001";
+      }
+      return window.location.origin;
+    }
+    return "http://localhost:5001";
+  }
   if (/^https?:\/\//i.test(raw)) return raw;
   return `https://${raw}`;
 }

@@ -4,9 +4,21 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
-    "install:all": "npm install --prefix server && npm install --prefix client"
+    "install:all": "npm install --prefix server && npm install --prefix client",
+    "prisma:generate": "prisma generate --schema server/prisma/schema.prisma",
+    "prisma:migrate:deploy": "prisma migrate deploy --schema server/prisma/schema.prisma",
+    "ingest:once": "node server/src/scripts/ingestOnce.js",
+    "netlify:build": "npm ci && npm ci --prefix server && npm ci --prefix client && npm run prisma:generate && npm run prisma:migrate:deploy && npm run build --prefix client"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.2",
+    "serverless-http": "^3.2.0"
   },
   "devDependencies": {
-    "concurrently": "^8.2.0"
+    "concurrently": "^8.2.0",
+    "prisma": "^6.19.2"
   }
 }
