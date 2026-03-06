@@ -1,0 +1,91 @@
+services:
+  - type: web
+    name: ukrainedigest-web
+    runtime: static
+    rootDir: client
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: ukrainedigest-api
+          property: host
+
+  - type: web
+    name: ukrainedigest-api
+    runtime: node
+    rootDir: server
+    buildCommand: npm ci && npx prisma generate --schema prisma/schema.prisma
+    preDeployCommand: npx prisma migrate deploy --schema prisma/schema.prisma
+    startCommand: npm run start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: ukrainedigest-web
+          property: host
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: NEWS_API_KEY
+        sync: false
+      - key: NEWS_QUERY
+        value: ukraine
+      - key: INGEST_PAGE_SIZE
+        value: 10
+      - key: INGEST_INTERVAL_MINUTES
+        value: 180
+      - key: NEWS_API_DAILY_BUDGET
+        value: 90
+      - key: SNAPSHOT_SCHEDULER_ENABLED
+        value: false
+
+  - type: cron
+    name: ukrainedigest-ingest
+    runtime: node
+    rootDir: server
+    buildCommand: npm ci && npx prisma generate --schema prisma/schema.prisma
+    schedule: "0 */3 * * *"
+    startCommand: npm run ingest:once
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromService:
+          type: web
+          name: ukrainedigest-api
+          envVarKey: DATABASE_URL
+      - key: DIRECT_URL
+        fromService:
+          type: web
+          name: ukrainedigest-api
+          envVarKey: DIRECT_URL
+      - key: NEWS_API_KEY
+        fromService:
+          type: web
+          name: ukrainedigest-api
+          envVarKey: NEWS_API_KEY
+      - key: NEWS_QUERY
+        fromService:
+          type: web
+          name: ukrainedigest-api
+          envVarKey: NEWS_QUERY
+      - key: INGEST_PAGE_SIZE
+        fromService:
+          type: web
+          name: ukrainedigest-api
+          envVarKey: INGEST_PAGE_SIZE
+      - key: NEWS_API_DAILY_BUDGET
+        fromService:
+          type: web
+          name: ukrainedigest-api
+          envVarKey: NEWS_API_DAILY_BUDGET

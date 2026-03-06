@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ukraine Digest Design System
+   Reading-first, neutral, professional design
+   All colors in HSL format
+*/
+
+@layer base {
+  :root {
+    /* Primary Blue - Trust, stability, professionalism */
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Slate Neutrals - Sophisticated, easy on eyes */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
+    
+    --radius: 0.5rem;
+    
+    /* Custom semantic tokens */
+    --text-primary: 222 47% 11%;
+    --text-secondary: 215 25% 27%;
+    --text-tertiary: 215 16% 47%;
+    --text-muted: 215 20% 65%;
+    
+    --surface-primary: 0 0% 100%;
+    --surface-secondary: 210 40% 98%;
+    --surface-tertiary: 210 40% 96%;
+    
+    --border-subtle: 214 32% 91%;
+    --border-default: 214 32% 87%;
+    
+    /* Feedback colors */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+  }
+
+  .dark {
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 11%;
+    
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 217 33% 17%;
+    --popover-foreground: 210 40% 98%;
+    
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 212 27% 84%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+}
+
+@layer components {
+  /* Reading-optimized text */
+  .text-body {
+    @apply text-base leading-relaxed;
+    color: hsl(var(--text-secondary));
+  }
+  
+  .text-heading {
+    @apply font-semibold leading-tight;
+    color: hsl(var(--text-primary));
+  }
+  
+  .text-caption {
+    @apply text-sm leading-normal;
+    color: hsl(var(--text-tertiary));
+  }
+  
+  /* Card variants */
+  .card-article {
+    @apply bg-card rounded-xl p-6 shadow-sm border border-border;
+    @apply hover:shadow-md transition-shadow;
+  }
+  
+  .card-interactive {
+    @apply bg-card rounded-xl p-6 shadow-sm border border-border;
+    @apply hover:shadow-md hover:border-primary/30 transition-all cursor-pointer;
+  }
+  
+  /* Container widths for reading */
+  .container-reading {
+    @apply max-w-5xl mx-auto px-4 md:px-6;
+  }
+  
+  .container-wide {
+    @apply max-w-7xl mx-auto px-4 md:px-6;
+  }
+}

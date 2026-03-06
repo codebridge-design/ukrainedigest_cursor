@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Country {
+  id        Int       @id @default(autoincrement())
+  iso2      String    @unique @db.VarChar(2)
+  name      String
+  region    Region    @default(UNKNOWN)
+  tier      Int       @default(2)
+  isEnabled Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  articles  Article[]
+  sources   Source[]
+
+  @@index([region])
+  @@index([isEnabled])
+}
+
+model Source {
+  id          Int       @id @default(autoincrement())
+  name        String
+  homepageUrl String?
+  domain      String?   @unique @db.VarChar(255)
+  isEnabled   Boolean   @default(true)
+  countryId   Int
+  region      Region    @default(UNKNOWN)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  articles    Article[]
+  country     Country   @relation(fields: [countryId], references: [id])
+
+  @@index([countryId])
+  @@index([region])
+}
+
+model Article {
+  id            Int            @id @default(autoincrement())
+  title         String
+  summary       String
+  url           String         @db.VarChar(2048)
+  sourceId      Int
+  countryId     Int
+  region        Region         @default(UNKNOWN)
+  language      String?        @db.VarChar(10)
+  publishedAt   DateTime       @default(now())
+  createdAt     DateTime       @default(now())
+  country       Country        @relation(fields: [countryId], references: [id])
+  source        Source         @relation(fields: [sourceId], references: [id])
+  snapshotItems SnapshotItem[]
+
+  @@index([publishedAt])
+  @@index([countryId, publishedAt])
+  @@index([region, publishedAt])
+  @@index([sourceId, publishedAt])
+  @@unique([url, countryId])
+}
+
+model Snapshot {
+  id            Int            @id @default(autoincrement())
+  date          String         @unique @db.VarChar(10)
+  status        SnapshotStatus @default(success)
+  totalArticles Int            @default(0)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  items         SnapshotItem[]
+}
+
+model SnapshotItem {
+  id         Int      @id @default(autoincrement())
+  snapshotId Int
+  articleId  Int
+  rank       Int      @default(0)
+  createdAt  DateTime @default(now())
+  article    Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  snapshot   Snapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+
+  @@unique([snapshotId, articleId])
+  @@index([snapshotId])
+  @@index([articleId])
+}
+
+enum Region {
+  UNKNOWN
+  EUROPE
+  NORTH_AMERICA
+  SOUTH_AMERICA
+  AFRICA
+  ASIA
+  OCEANIA
+}
+
+enum SnapshotStatus {
+  success
+  partial
+  failed
+}
