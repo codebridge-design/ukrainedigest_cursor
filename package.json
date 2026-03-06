@@ -8,7 +8,7 @@
     "prisma:generate": "prisma generate --schema server/prisma/schema.prisma",
     "prisma:migrate:deploy": "prisma migrate deploy --schema server/prisma/schema.prisma",
     "ingest:once": "node server/src/scripts/ingestOnce.js",
-    "netlify:build": "npm ci && npm ci --prefix server && npm ci --prefix client && npm run prisma:generate && npm run prisma:migrate:deploy && npm run build --prefix client"
+    "netlify:build": "npm ci && npm ci --prefix client && npm run prisma:generate && npm run prisma:migrate:deploy && npm run build --prefix client"
   },
   "dependencies": {
     "@prisma/client": "^6.19.2",
