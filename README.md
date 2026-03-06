@@ -138,8 +138,6 @@ This repo is already configured for Netlify with `netlify.toml`.
 
 ### 1. Import project
 
-- Netlify -> Add new project -> Import existing repo
-- Select: `maxkukish8/ukrainedigest-server`
 - Branch: `main`
 
 ### 2. Set environment variables in Netlify
